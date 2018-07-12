@@ -5,12 +5,14 @@ import json
 import logging
 
 import gitlab
+import colorlog
+
+
+handler = colorlog.StreamHandler()
+handler.setFormatter(colorlog.ColoredFormatter(
+    '%(log_color)s%(levelname)8s %(asctime)s [%(name)12s - %(funcName)20s] %(message)s'))
 
 ISSUE_LABEL = 'auto'
-
-h = logging.StreamHandler(sys.stdout)
-h.setFormatter(logging.Formatter(
-    '%(levelname)8s %(asctime)s [%(name)12s - %(funcName)20s] %(message)s'))
 
 
 class Publisher(object):
@@ -20,7 +22,7 @@ class Publisher(object):
         self.config = config
         self.mr_list = []
         self.logger = logging.getLogger('Publisher')
-        self.logger.addHandler(h)
+        self.logger.addHandler(handler)
         self.logger.setLevel(logging.INFO)
         self.logger.info("The Publisher object was created.")
 
@@ -59,7 +61,7 @@ class Publisher(object):
     def change_files_actions(self, gtlb_proj, branch, dsl):
         result = []
         for fp in [f['path'] for f in self.get_all_files(gtlb_proj, dsl['mod_desc'], dsl['fil_desc'], branch.name)]:
-            self.logger.info(
+            self.logger.debug(
                 'About to access this file path: {} of this branch * {} *'.format(fp, branch.name))
             rawfile = gtlb_proj.files.get(
                 file_path=fp, ref=branch.name).decode()
@@ -106,7 +108,7 @@ class Publisher(object):
             self.logger.info('Issue created at {}'.format(issue.web_url))
         else:
             issue = [i for i in auto_issues if i.title == issue_title].pop()
-            self.logger.info('Issue found at {}'.format(
+            self.logger.warning('Issue found at {}'.format(
                 issue.web_url))
             issue.description = issue_desc
             issue.state_event = 'reopen'
@@ -120,7 +122,7 @@ class Publisher(object):
         except gitlab.exceptions.GitlabGetError:
             branch = gtlb_proj.branches.create(
                 {'branch': branch_name, 'ref': main_branch})
-            self.logger.info('Branch created as {}'.format(branch.name))
+            self.logger.warning('Branch created as {}'.format(branch.name))
         return branch
 
     def create_an_mr(self, gtlb_proj, branch_name, issue, main_branch):
@@ -135,7 +137,7 @@ class Publisher(object):
             self.logger.info('MR created at {}'.format(mr.web_url))
         else:
             mr = [m for m in current_mrs if m.source_branch == branch_name][0]
-            self.logger.info('MR found at {}'.format(mr.web_url))
+            self.logger.warning('MR found at {}'.format(mr.web_url))
         return mr
 
     def push_changes(self, gtlb_proj, branch, dsl):
@@ -148,7 +150,7 @@ class Publisher(object):
                 dsl['commit_msg'], branch.name))
             return gtlb_proj.commits.create(data)
         else:
-            self.logger.info('The commit was already pushed: {}.'.format(
+            self.logger.warning('The commit was already pushed: {}.'.format(
                 dsl['commit_msg']))
 
     def process_one(self, gtlb_proj_name, main_branch):
@@ -185,7 +187,6 @@ class Publisher(object):
                 'Processing this dsl: {}'.format(dsl['commit_msg']))
             self.push_changes(gtlb_proj, branch, dsl)
         self.logger.info('------ Finished processing ' + gtlb_proj_name)
-        self.logger.info('\n')
 
 
 def main():
