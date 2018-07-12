@@ -118,11 +118,11 @@ class Publisher(object):
     def create_a_branch(self, gtlb_proj, branch_name, main_branch):
         try:
             branch = gtlb_proj.branches.get(branch_name)
-            self.logger.info('Branch found at {}'.format(branch.name))
+            self.logger.warning('Branch found at {}'.format(branch.name))
         except gitlab.exceptions.GitlabGetError:
             branch = gtlb_proj.branches.create(
                 {'branch': branch_name, 'ref': main_branch})
-            self.logger.warning('Branch created as {}'.format(branch.name))
+            self.logger.info('Branch created as {}'.format(branch.name))
         return branch
 
     def create_an_mr(self, gtlb_proj, branch_name, issue, main_branch):
@@ -132,7 +132,7 @@ class Publisher(object):
             mr = gtlb_proj.mergerequests.create({'source_branch': branch_name,
                                                  'target_branch': main_branch,
                                                  'title': mr_title,
-                                                 'description': '# ATTENTION \n Make sure you have read {} \n close #{}'.format(issue.iid, issue.iid),
+                                                 'description': '# ATTENTION \n Make sure you have read #{} \n Fix #{}'.format(issue.iid, issue.iid),
                                                  'remove_source_branch': True})
             self.logger.info('MR created at {}'.format(mr.web_url))
         else:
@@ -183,7 +183,7 @@ class Publisher(object):
                     {'url': jenk_hook.url, 'push_events': 1, 'merge_requests_events': 1})
                 self.logger.info('-- Resotred the webhook')
             dsl = self.config['actions'][i]
-            self.logger.info(
+            self.logger.debug(
                 'Processing this dsl: {}'.format(dsl['commit_msg']))
             self.push_changes(gtlb_proj, branch, dsl)
         self.logger.info('------ Finished processing ' + gtlb_proj_name)
@@ -197,8 +197,8 @@ def main():
     publisher = Publisher(gtlb, config)
     [publisher.process_one(gtlb_proj_name, main_branch)
      for proj in config['proj_list'] for gtlb_proj_name, main_branch in proj.items()]
-    # print('\n'.join([i[0] for i in publisher.mr_list]))
-    # print('\n'.join([i[1] for i in publisher.mr_list]))
+    print('\n'.join([i[0] for i in publisher.mr_list]))
+    print('\n'.join([i[1] for i in publisher.mr_list]))
 
 
 if __name__ == '__main__':
