@@ -25,7 +25,7 @@ $ pipenv install --dev # Install all the dependencies
 
 $ pipenv shell # Spawns a shell within the virtualenv
 
-# Fill in issue.txt and config.json for necessary information
+# Fill in issue.md and config.json for necessary information
 
 $ pipenv run python publisher.py
 ```
