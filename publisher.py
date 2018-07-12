@@ -10,7 +10,7 @@ ISSUE_LABEL = 'auto'
 
 h = logging.StreamHandler(sys.stdout)
 h.setFormatter(logging.Formatter(
-    '%(levelname)8s %(asctime)s [%(name)15s - %(funcName)20s] %(message)s'))
+    '%(levelname)8s %(asctime)s [%(name)12s - %(funcName)20s] %(message)s'))
 
 
 class Publisher(object):

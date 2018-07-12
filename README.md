@@ -14,12 +14,12 @@ GLPublisher is a small script that can be used to publish a pre-defined set of c
 # How to set up
 
 You will need to have [pipenv](https://docs.pipenv.org/) to set it up and running.
-(For sure you can ignore that and pick up the requirements and install theml on your global python. And if you understand what that means, go ahead.)
+(For sure you can ignore that and pick up the requirements and install them on your global python. And if you understand what that means, go ahead.)
 
 Make sure you have an environment variable named `GITLAB_ACCESS_TOKEN` that you can get from your Gitlab settings.
 
 ```bash
-# The paper work: clone the repo and cd into it
+# The paper work: clone the repository and cd into it
 
 $ pipenv install --dev # Install all the dependencies
 
