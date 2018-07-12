@@ -1,0 +1,50 @@
+{
+  "actions": [
+    {
+      "commit_msg": "Update the server.port value",
+      "changes": [
+        {
+          "fil_desc": "application\\.properties",
+          "mod_desc": ".*",
+          "replacements": [
+            {
+              "new_str": "server.port=8081",
+              "old_str": "server.port=8080",
+              "append_flag": false
+            }
+          ],
+          "type": "update"
+        }
+      ]
+    },
+    {
+      "commit_msg": "Update the pom.xml version",
+      "changes": [
+        {
+          "fil_desc": "pom\\.xml",
+          "mod_desc": "pom\\.xml",
+          "replacements": [
+            {
+              "new_str": "<version>0.0.1-RELEASE</version>",
+              "old_str": "<version>0.0.1-SNAPSHOT</version>",
+              "append_flag": false
+            }
+          ],
+          "type": "update"
+        }
+      ]
+    }
+  ],
+  "branch_npf": "some_updates",
+  "gitlab_url": "https://gitlab.com",
+  "issue_title": "Some changes about XXX and YYY",
+  "proj_list": [
+    {
+      "xzjia/spring-demo-1": "master"
+    },
+    {
+      "xzjia/spring-demo-2": "master"
+    }
+  ],
+  "whoareyou": "xzjia"
+}
